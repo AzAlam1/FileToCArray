@@ -39,6 +39,51 @@ var imageConverter = {
                 retData = [b16Pixel >> 8, b16Pixel & 255]; // RRRRRGGG|GGGBBBBB
                 newPixelData = [newR * 256 / 32, newG * 256 / 64, newB * 256 / 32, 255]; // scale the values back to the 0-255 range
                 break;
+            case '16bgr':
+                // 1 2 3 4 5 6 7 8|1 2 3 4 5 6 7 8
+                // B B B B B|G G G G G G|R R R R R
+                // 1 2 3 4 5|1 2 3 4 5 6|1 2 3 4 5
+                // 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 1
+                // 0000100000100001
+                // R, B = 32 values
+                // G = 64 values
+                newR = (r * 32 / 256) | 0; // Math.floor()
+                newG = (g * 64 / 256) | 0;
+                newB = (b * 32 / 256) | 0;
+                var b16Pixel = newB * 2048 + newG * 32 + newR;
+                retData = [b16Pixel >> 8, b16Pixel & 255]; // BBBBBGGG|GGGRRRRR
+                newPixelData = [newB * 256 / 32, newG * 256 / 64, newR * 256 / 32, 255]; // scale the values back to the 0-255 range
+                break;
+            case '16rbg':
+                // 1 2 3 4 5 6 7 8|1 2 3 4 5 6 7 8
+                // R R R R R|B B B B B B|G G G G G
+                // 1 2 3 4 5|1 2 3 4 5 6|1 2 3 4 5
+                // 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 1
+                // 0000100000100001
+                // R, B = 32 values
+                // G = 64 values
+                newR = (r * 32 / 256) | 0; // Math.floor()
+                newG = (g * 32 / 256) | 0;
+                newB = (b * 64 / 256) | 0;
+                var b16Pixel = newR * 2048 + newB * 32 + newG;
+                retData = [b16Pixel >> 8, b16Pixel & 255]; // RRRRRBBB|BBBGGGG
+                newPixelData = [newR * 256 / 32, newB * 256 / 64, newG * 256 / 32, 255]; // scale the values back to the 0-255 range
+                break;
+            case '16brg':
+                // 1 2 3 4 5 6 7 8|1 2 3 4 5 6 7 8
+                // B B B B B|R R R R R R|G G G G G
+                // 1 2 3 4 5|1 2 3 4 5 6|1 2 3 4 5
+                // 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 1
+                // 0000100000100001
+                // R, B = 32 values
+                // G = 64 values
+                newR = (r * 64 / 256) | 0; // Math.floor()
+                newG = (g * 32 / 256) | 0;
+                newB = (b * 32 / 256) | 0;
+                var b16Pixel = newB * 2048 + newR * 32 + newG;
+                retData = [b16Pixel >> 8, b16Pixel & 255]; // BBBBBRRR|RRRGGGG
+                newPixelData = [newB * 256 / 32, newR * 256 / 64, newG * 256 / 32, 255]; // scale the values back to the 0-255 range
+                break;
             case '15':
                 newR = (r * 32 / 256) | 0; // Math.floor()
                 newG = (g * 32 / 256) | 0;
